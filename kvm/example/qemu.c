@@ -14,6 +14,7 @@
 
 int main() {
     struct kvm_sregs sregs;
+    struct kvm_regs regs;
     int ret;
     int kvmfd, vmfd;
     int version = 0;
@@ -47,6 +48,13 @@ int main() {
     sregs.cs.selector = 0;
 
     ret = ioctl(vcpufd, KVM_SET_SREGS, &sregs);
+    
+    ret = ioctl(vcpufd, KVM_GET_REGS, &regs);
+    regs.rip = 0;
+    regs.rflags = 2;
+    
+    ret = ioctl(vcpufd, KVM_SET_REGS, &regs);
+
 
     while(1) {
         ret = ioctl(vcpufd, KVM_RUN, NULL);
